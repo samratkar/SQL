@@ -166,13 +166,53 @@ group by dno
 
 -- 27b. Instead of dno, display dname
 select dname, avg(salary)
+from employee inner join department on dno=dnumber
+where salary >= 30000
+group by dname
+order by dname
+
+-- 28. Display the fname of employees working in the Research department
+select fname, dname
+from employee inner join department on dno=dnumber
+where dname = 'Research'
+
+-- same without join
+select fname 
 from employee
-group by dno
-where salary >= 30000 and dname in (select dname from department where dnumber = dno)
+where dno = (select dnumber from department where dname = 'Research')
 
+-- 29. Display the fname and salary of employees whose salary is more than the average salary of all the employees
+select fname, salary
+from employee
+where salary > (select avg(salary) from employee)
 
+-- 30. Which project(s) have the least number of employees?
+select pno, count(*) numemps
+from works_on
+group by pno 
+having numemps = (select min(nemps) from (select pno, count(*) nemps from works_on group by pno) tmp)
 
+-- 31. Display the fname of those employees who work for at least 20 hours
+select essn, fname 
+from works_on inner join employee on essn=ssn 
+where hours >= 20
 
+-- 32. What is the average salary of those employees who have at least one
+--     dependent
+select essn, fname, count(dependent_name) cdep, avg(salary)
+from dependent inner join employee on essn=ssn 
+group by essn 
+having cdep >= 1
+
+-- 33. Display the ssn, lname and the name of the department of all the employees
+select ssn, lname, dname
+from employee inner join department on dno=dnumber
+order by ssn
+
+-- 34. Display the ssn, lname, name of project of all the employees
+select ssn, lname, pname
+from employee inner join project on pno=pnumber
+order by ssn
 
 
 -- MISCS
