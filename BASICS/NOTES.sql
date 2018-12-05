@@ -55,3 +55,40 @@ When working with multiple tables, one should use aliases for the table as below
 select e.ssn, e.lname, p.pname
 from employee e inner join works_on w on e.ssn = w.essn
 	inner join project p on w.pno = p.pnumber;
+
+8. USING RESULTS OF NESTED QUERIES AS EXPRESSIONS.
+-- 36. What is the name of the department that has least number of
+--     employees?
+select dname, count(ssn) c
+from employee inner join department on dno=dnumber
+group by dname
+having c = (select min(ct)
+			from (select count(ssn) ct
+				  from employee
+				  group by dno
+                  )t
+			);
+
+9. EVERY DERIVED TABLE MUST HAVE ITS OWN ALIAS.
+DONT USE 'TABLE' AS ALIAS, AS IT IS A STANDARD KEYWORD.
+-- 37. What is the name of the department whose employees have the highest
+--     average salary?
+select dname, avg(salary) avsal
+from employee inner join department on dno=dnumber
+group by dname
+having avsal = (select max(salary)
+								from employee
+                )t
+
+10. group by can exist without aggregator methods.
+select max(salary) from employee
+
+11. NOTE THAT THIS IS THE CASE WHERE THERE IS NO SUB TABLE. SO NAMING IS NOT REQUIRED.
+-- 37. What is the name of the department whose employees have the highest
+--     average salary?
+select dname, avg(salary) avsal
+from employee inner join department on dno=dnumber
+group by dname
+having avsal = (select max(salary)
+								from employee
+                )

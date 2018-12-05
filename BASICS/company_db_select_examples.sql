@@ -214,7 +214,42 @@ select ssn, lname, pname
 from employee inner join project on pno=pnumber
 order by ssn
 
+-- 35a. Display the ssn, their department, the project they work on and
+--     the name of the department which runs that project
+-- 	Hint: Needs a 5 table join
+-- 	Output heading: ssn, emp-dept-name, pname, proj-dept-no
+select ssn, dname as 'emp-dept-name' , pname, pnumber as 'proj-dept-no'
+from employee e inner join department d on e.dno=d.dnumber 
+				inner join works_on w on e.ssn=w.essn
+                inner join project p on w.pno=p.pnumber
+                
+-- 35b. Display the deptname, the project the department runs
+-- 	Output heading: dept-name, pname
+select dname, pname
+from project inner join department on dnum=dnumber
 
+
+-- 36. What is the name of the department that has least number of 
+--     employees?
+select dname, count(ssn) c
+from employee inner join department on dno=dnumber
+group by dname
+having c = (select min(ct) 
+			from (select count(ssn) ct 
+				  from employee 
+				  group by dno
+                  )t
+			);
+
+-- 37. What is the name of the department whose employees have the highest
+--     average salary?
+select dname, avg(salary) avsal
+from employee inner join department on dno=dnumber 
+group by dname
+having avsal = (select max(salary)
+				from employee 
+                )
+                
 -- MISCS
 
 select pno, count(essn)
@@ -224,3 +259,5 @@ group by pno
 select * 
 from works_on 
 order by pno, hours
+
+select * from department
