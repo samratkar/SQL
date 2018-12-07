@@ -249,7 +249,28 @@ group by dname
 having avsal = (select max(salary)
 				from employee 
                 )
-                
+   
+
+-- 38. Display the fname of the employee along with the fname of the manager
+select emp.fname, mgr.mgr_fname 
+from employee emp inner join 
+    (select distinct e.ssn mgr_ssn, e.fname mgr_fname
+        from employee e inner join employee s on e.ssn=s.super_ssn) mgr
+where emp.super_ssn = mgr_ssn
+
+-- 38. Display the fname of the employee along with the fname of the manager
+select e.fname 'EmpName', m.fname 'MgrName'
+from employee e, employee m
+where e.super_ssn = m.ssn;
+
+
+-- 41. CORRELAtED QUERY 
+-- SHOW THE NAMES OF EMPLOYEES WHOSE SALARY IS GREATER THAN THE RESPECTIVE DEPARTEMENTS AVERAGE SALARY
+select fname, lname, salary, dno
+from employee e1
+where salary >= (select avg(salary) 
+                from employee e2
+                where e2.dno = e1.dno)
 -- MISCS
 
 select pno, count(essn)
